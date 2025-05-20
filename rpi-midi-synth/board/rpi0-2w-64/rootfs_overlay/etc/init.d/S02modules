@@ -1,0 +1,21 @@
+#!/bin/sh
+
+case "${1}" in
+    start)
+	    [ -f /etc/modules ] || exit 0
+        echo -n "Loading modules:" ${INFO}
+        # Skip comments & blank lines
+        cat /etc/modules | sed 's/#.*$//g' | grep -vE "^$" | while read module args; do
+            # Attempt to load the module, making
+            # sure to pass any arguments provided.
+            modprobe ${module} ${args} >/dev/null
+        done
+	    echo "OK"
+        ;;
+    stop)
+        ;;
+    *)
+        echo "Usage: ${0} {start}"
+        exit 1
+        ;;
+esac

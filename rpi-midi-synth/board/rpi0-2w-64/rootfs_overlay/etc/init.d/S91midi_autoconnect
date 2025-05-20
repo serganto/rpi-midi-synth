@@ -1,0 +1,102 @@
+#!/bin/sh
+
+# A simple auto connection script for USB MIDI devices
+#
+# Copyright (C) 2025 Sergey Antonovich
+# www.midiaccordion.com
+#
+# This file is a part of Raspberry Pi MIDI Synth project
+# Licensed under the GNU General Public License v3 or later.
+# For disclaimer, see README.md
+
+DAEMON_NAME="midi_autoconnect"
+PIDFILE="/var/run/${DAEMON_NAME}.pid"
+LOGFILE="/var/log/${DAEMON_NAME}.log"
+
+get_fluidsynth_id() {
+    aconnect -o | awk '/FLUID/ {print $2}' | tr -d ':'
+}
+
+start_autoconnect() {
+    echo "Starting $DAEMON_NAME" >> "$LOGFILE"
+
+    echo -n "Waiting for FluidSynth"
+    MAX_TIME=15
+    COUNTER=0
+    while [ $COUNTER -lt $MAX_TIME ]; do
+        SYNTH=$(get_fluidsynth_id)
+        if [ -n "$SYNTH" ]; then
+            echo "FluidSynth ID=$SYNTH" >> "$LOGFILE"
+            break
+        fi
+        sleep 1
+        COUNTER=$((COUNTER + 1))
+        echo -n "."
+    done
+    echo
+
+    if [ -z "$SYNTH" ]; then
+        echo "FluidSynth port not found." >> "$LOGFILE"
+        exit 1
+    fi
+
+    while true; do
+        if [ `aconnect -l | grep -i connect | wc -l` -eq 0 ]; then
+            DEVICE=`aconnect -i | grep -iv -e through -e system | awk '/client/ {print $2}' | tr -d ':' | tail -1`
+            if [ -n "$DEVICE" ]; then
+                SYNTH=$(get_fluidsynth_id)
+                if [ -n "$SYNTH" ]; then
+                    echo "Connecting $DEVICE to $SYNTH" >> "$LOGFILE"
+                    aconnect "$DEVICE" "$SYNTH"
+                fi
+            fi
+        fi
+        sleep 2
+    done
+}
+
+start() {
+    if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+        echo "$DAEMON_NAME already running."
+        exit 0
+    fi
+
+    start_autoconnect &
+    echo $! > "$PIDFILE"
+    echo "$DAEMON_NAME running, PID=$(cat "$PIDFILE")"
+}
+
+stop() {
+    if [ -f "$PIDFILE" ]; then
+        PID=$(cat "$PIDFILE")
+        echo "Stopping $DAEMON_NAME, PID=$PID"
+        kill "$PID" 2>/dev/null
+        rm -f "$PIDFILE"
+    else
+        echo "$DAEMON_NAME not running."
+    fi
+}
+
+status() {
+    if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+        echo "$DAEMON_NAME running, PID=$(cat "$PIDFILE")"
+    else
+        echo "$DAEMON_NAME not running."
+    fi
+}
+
+restart() {
+    stop
+    sleep 1
+    start
+}
+
+case "$1" in
+    start) start ;;
+    stop) stop ;;
+    restart) restart ;;
+    status) status ;;
+    *) echo "Usage: $0 {start|stop|restart|status}" ;;
+esac
+
+exit 0

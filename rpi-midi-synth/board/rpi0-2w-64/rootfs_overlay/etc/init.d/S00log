@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# /var ro rootfs preparation
+#
+# Copyright (C) 2025 Sergey Antonovich
+# www.midiaccordion.com
+#
+# This file is a part of Raspberry Pi MIDI Synth project
+# Licensed under the GNU General Public License v3 or later.
+# For disclaimer, see README.md
+
+# Make sure /var is mounted
+[ -d /var ] || mkdir /var
+mountpoint -q /var || mount /var
+
+# Make subdirs
+mkdir -p /var/log
+mkdir -p /var/run
+mkdir -p /var/lock
+mkdir -p /var/lib/alsa
+mkdir -p /var/www
+
+chmod 755 /var/log /var/run /var/lock /var/lib/alsa /var/www
+
+# For syslog
+touch /var/log/messages
+chmod 644 /var/log/messages
