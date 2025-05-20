@@ -1,0 +1,59 @@
+# Please note that this is only a sample, we recommend you to change it to fit
+# your needs.
+# You should override this file using BR2_PACKAGE_RPI_FIRMWARE_CONFIG_FILE.
+# See http://buildroot.org/manual.html#rootfs-custom
+# and http://elinux.org/RPiconfig for a description of config.txt syntax
+
+start_file=start.elf
+fixup_file=fixup.dat
+
+kernel=Image
+
+# To use an external initramfs file
+#initramfs rootfs.cpio.gz
+
+# Disable overscan assuming the display supports displaying the full resolution
+# If the text shown on the screen disappears off the edge, comment this out
+disable_overscan=1
+
+# How much memory in MB to assign to the GPU on Pi models having
+# 256, 512 or 1024 MB total memory
+gpu_mem=16
+
+# Use UART as normal console
+dtoverlay=disable-bt
+
+# Enable 64bits support
+arm_64bit=1
+
+# Enable I2S audio output
+dtparam=i2s=on
+dtoverlay=pifi-dac-zero
+
+# Disable unused devices
+dtoverlay=disable-wifi
+dtparam=audio=off
+
+# enable USB otg controller
+dtoverlay=dwc2
+
+# Different optimizations for headless use
+initial_turbo=15
+disable_splash=1
+boot_delay=0
+hdmi_blanking=2
+hdmi_ignore_edid=0xa5000080
+hdmi_ignore_cec_init=1
+hdmi_ignore_cec=1
+hdmi_ignore_hotplug=1
+hdmi_force_hotplug=0
+force_eeprom_read=0
+disable_poe_fan=1
+ignore_lcd=1
+enable_tvout=0
+disable_touchscreen=1
+camera_auto_detect=0
+display_auto_detect=0
+max_framebuffers=0
+avoid_warnings=1
+framebuffer_blanking=1

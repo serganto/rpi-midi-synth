@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# FluidSynth autostart
+#
+# Copyright (C) 2025 Sergey Antonovich
+# www.midiaccordion.com
+#
+# This file is a part of Raspberry Pi MIDI Synth project
+# Licensed under the GNU General Public License v3 or later.
+# For disclaimer, see README.md
+
+DAEMON="fluidsynth"
+PIDFILE="/var/run/$DAEMON.pid"
+
+start() {
+    echo -n "Starting $DAEMON... "
+    cpupower frequency-set -g performance
+    aconnect -x
+    SOUNDFONT=`ls -1 /usr/share/soundfonts/*.sf2 | head -1`
+    echo -n "Soundfont: $SOUNDFONT... "
+        start-stop-daemon -S -c root -b -m -p $PIDFILE -x nice -- -n -20 fluidsynth -a alsa -r 44100 -c 2 -z 64 \
+            -o audio.alsa.device=hw:0,0 \
+            -o synth.cpu-cores=`nproc` \
+            -o synth.polyphony=64 \
+            -o midi.realtime-prio=99 \
+            -o audio.realtime-prio=99 \
+            -s "$SOUNDFONT"
+        [ $? -eq 0 ] && echo "OK" || echo "ERROR"
+}
+
+stop() {
+        echo -n "Stopping $DAEMON... "
+        start-stop-daemon -K -p $PIDFILE
+        [ $? -eq 0 ] && echo "OK" || echo "ERROR"
+}
+
+restart() {
+        stop
+        start
+}
+
+case "$1" in
+    start|stop|restart)
+        "$1"
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+esac
+
+exit $?

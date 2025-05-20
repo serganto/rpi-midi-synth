@@ -1,0 +1,13 @@
+snd-soc-bcm2835-i2s
+snd-soc-pcm5102a
+snd-soc-simple-card
+snd-timer
+snd-hrtimer
+snd-seq-midi
+snd-rawmidi
+snd-seq-midi
+snd-seq-midi-event
+snd-seq
+snd-seq-device
+snd-usb-audio
+dwc2
