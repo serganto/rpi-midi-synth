@@ -59,7 +59,7 @@ To get started:
 ### 2. Manual setup on Ubuntu 22
 Alternatively, install required packages manually:
 ```bash
-./devcontainer/install_packages.sh
+.devcontainer/install_packages.sh
 ```
 
 ---
@@ -105,7 +105,7 @@ Replace `/dev/sdX` with your actual SD card device. Double check the device befo
 ## Running the Synthesizer
 
 1. Insert the SD card into Raspberry Pi Zero 2 W
-2. Power on - boot time is under 10 seconds
+2. Power on - boot time is under 10 seconds, plus several seconds for FluidSynth init
 3. Connect a **USB MIDI keyboard or other device**
 4. Connect PCM5102 line output into speakers
 5. The system auto-detects your USB MIDI device in 2 seconds
@@ -146,7 +146,7 @@ You're also welcome to reach out if you build something interesting with it - I'
 
 ---
 
-## Collaboration & Media
+## Collaboration and Media
 
 This is an **independent project** developed in my personal time. I'm happy to share more **details**, provide **background materials**, or **support coverage** of the project in any form - whether it's for a blog, article, interview, or showcase.
 
