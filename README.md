@@ -20,7 +20,22 @@ The system supports up to **64 voices of polyphony**, which is sufficient for fu
 
 ## Hardware Setup
 
-First, you need to connect the [PCM5102](https://www.amazon.com/Interface-PCM5102A-GY-PCM5102-Converter-Raspberry/dp/B0DCFN2JGF/ref=asc_df_B0DCFN2JGF) DAC to Raspberry Pi Zero 2 W. Use the following wiring:
+You need the [PCM5102](https://www.amazon.com/Interface-PCM5102A-GY-PCM5102-Converter-Raspberry/dp/B0DCFN2JGF/ref=asc_df_B0DCFN2JGF) DAC breakout board.
+
+Frist, make sure it is configured as follows:
+
+| Jumper | Position |
+|--------|----------|
+| 1      | L        |
+| 2      | L        |
+| 3      | H        |
+| 4      | L        |
+
+Use the picture for reference:
+
+![PCM5102 jumpers](img/codec.jpg)
+
+Second, connect the [PCM5102](https://www.amazon.com/Interface-PCM5102A-GY-PCM5102-Converter-Raspberry/dp/B0DCFN2JGF/ref=asc_df_B0DCFN2JGF) DAC to Raspberry Pi Zero 2 W. Use the following wiring:
 
 | Raspberry Pi Zero 2 W Pin | PCM5102 Pin     |
 |---------------------------|-----------------|
@@ -32,14 +47,10 @@ First, you need to connect the [PCM5102](https://www.amazon.com/Interface-PCM510
 | (not connected)           | SCK             |
 
 Use as short wires as possible.
-Also, make sure the PCM5102 board mentioned above is configured as follows:
 
-| Jumper | Position |
-|--------|----------|
-| 1      | L        |
-| 2      | L        |
-| 3      | H        |
-| 4      | L        |
+Use the picture for reference:
+
+![Raspberry Pi Zero 2 W with the codec](img/board.jpg)
 
 Optionally, you can connect a USB-UART adapter to GPIO 14/15 for console access (TXD/RXD). The default user name is `root`, and the password is `root` as well.
 
@@ -130,7 +141,7 @@ The author cannot verify or control what users choose to load, and therefore **a
 
 1. After flashing the image via `dd`, mount the SD card's root partition
 2. Delete the default soundfont from `/usr/share/soundfonts/FluidR3_GM.sf2`
-3. Copy your new `.sf2` file to the same location using the same filename
+3. Copy your new `.sf2` file to the same location using any filename, but keeping its `.sf2` extension
 
 Please have only one `.sf2` file inside `/usr/share/soundfonts`, otherwise the system will use the first found.
 
